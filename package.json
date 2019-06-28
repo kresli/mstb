@@ -31,12 +31,20 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-typescript": "^7.3.3",
-    "typescript": "^3.5.2"
+    "@types/uuid": "^3.4.4",
+    "mobx-state-tree": "^3.14.0",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^3.5.2",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "eslint-config-prettier": "^6.0.0",
+    "prettier": "^1.18.2",
     "rollup": "^1.16.2",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-commonjs": "^10.0.1",
-    "rollup-plugin-node-resolve": "^5.1.0"
+    "rollup-plugin-node-resolve": "^5.1.0",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0"
   }
 }

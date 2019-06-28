@@ -1,3 +1,1 @@
-export function x() {
-    return 'hello'
-}
+export { Bundle, Controller } from "./internal";
