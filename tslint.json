@@ -1,7 +1,8 @@
 {
   "rules": {
     "prettier": true,
-    "interface-name": false
+    "interface-name": false,
+    "object-literal-sort-keys": false
   },
   "defaultSeverity": "error",
   "extends": [

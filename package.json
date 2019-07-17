@@ -32,7 +32,8 @@
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-typescript": "^7.3.3",
     "@types/uuid": "^3.4.4",
-    "mobx-state-tree": "^3.14.0",
+    "mobx": "^5.10.1",
+    "mobx-state-tree": "3.14.0",
     "tslint-plugin-prettier": "^2.0.1",
     "typescript": "^3.5.2",
     "uuid": "^3.3.2"

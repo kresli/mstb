@@ -2,4 +2,5 @@
     "prettier.tslintIntegration": true,
     "editor.formatOnSave": true,
     "prettier.eslintIntegration": true,
+    "typescript.tsdk": "node_modules/typescript/lib",
 }

@@ -1,24 +1,17 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "noUnusedLocals": true,
-    "noImplicitAny": true,
     "declarationDir": "dist/types",
     "declaration": true,
     "target": "es2015",
     "module": "es2015",
+    "noStrictGenericChecks": false,
+    "experimentalDecorators": true,
     "strict": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src/**/*", "__tests__/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

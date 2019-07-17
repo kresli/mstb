@@ -1,1 +1,1 @@
-export declare function x(): string;
+export { Bundle, Controller } from "./internal";

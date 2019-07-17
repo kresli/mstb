@@ -4,14 +4,13 @@ import {
   Instance,
   IOptionalIType,
   ISimpleType,
-  ModelProperties,
   SnapshotIn,
   types
 } from "mobx-state-tree";
 import { ExtractProps } from "mobx-state-tree/dist/internal";
 import { Controller } from "./internal";
 
-export function Bundle<TBase extends Controller>(Base: TBase) {
+export function Bundle<TBase extends Controller>(Base: TBase): Bundle<TBase> {
   type Store = StoreType<TBase>;
   const Store = Base.Store.named(Base.name).volatile(self => ({
     $controller: new Base(self)
@@ -48,7 +47,7 @@ export interface Circular<C extends Controller, M extends IAnyModelType> {
   new (...args: any[]): InstanceType<C>;
 }
 
-export type StoreType<TBase extends Controller> = Circular<
+type StoreType<TBase extends Controller> = Circular<
   TBase,
   IModelType<
     TBase["Props"] & { uuid: IOptionalIType<ISimpleType<string>, [undefined]> },
@@ -56,13 +55,20 @@ export type StoreType<TBase extends Controller> = Circular<
   >
 >["Store"];
 
-export interface Bundle<
-  S extends IAnyModelType = IAnyModelType,
-  P extends ModelProperties = ModelProperties
-> {
-  Store: S;
-  Props: P;
-  new (...args: any): {
-    $model: Instance<S>;
+export interface Bundle<C extends Controller = any> {
+  Store: StoreType<C>;
+  Props: C["Props"];
+  new (...args: any[]): {
+    $model: Instance<
+      IModelType<
+        C["Props"] & {
+          uuid: IOptionalIType<ISimpleType<string>, [undefined]>;
+        },
+        {}
+      >
+    >;
+    $modelBeforeDestroy(): void;
+    $modelAfterAttach(): void;
+    $modelAfterCreate(): void;
   };
 }

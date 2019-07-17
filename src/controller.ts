@@ -1,8 +1,10 @@
 // tslint:disable: no-empty
 import {
   getRoot,
+  IAnyStateTreeNode,
   IModelType,
   Instance,
+  IOptionalIType,
   ISimpleType,
   ModelProperties,
   unprotect
@@ -34,11 +36,17 @@ export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
     public static Props = Props;
     public static Store = Store;
     constructor(public $model: Instance<typeof Store>) {
-      unprotect(getRoot(this.$model));
+      unprotect(getRoot(this.$model as IAnyStateTreeNode));
     }
     public $modelBeforeDestroy() {}
     public $modelAfterAttach() {}
     public $modelAfterCreate() {}
+    // public $resolve<T extends Bundle>(
+    //   bundleType: T,
+    //   preicate: (bundle: Instance<T>) => boolean
+    // ) {
+    //   return [];
+    // }
   }
   return Bundle(ControllerClass);
 }
@@ -47,9 +55,18 @@ export interface Controller<P extends ModelProperties = ModelProperties> {
   Props: P;
   Store: IModelType<P, {}>;
   new (...args: any[]): {
-    $model: Instance<IModelType<P & { uuid: ISimpleType<string> }, {}>>;
+    $model: Instance<
+      IModelType<
+        P & { uuid: IOptionalIType<ISimpleType<string>, [undefined]> },
+        {}
+      >
+    >;
     $modelBeforeDestroy(): void;
     $modelAfterAttach(): void;
     $modelAfterCreate(): void;
+    // $resolve<T extends Bundle>(
+    //   bundleType: T,
+    //   preicate: (bundle: Instance<T>) => boolean
+    // ): Array<Instance<T>>;
   };
 }
