@@ -10,7 +10,7 @@ import {
 import { ExtractProps } from "mobx-state-tree/dist/internal";
 import { Controller } from "./internal";
 
-export function Bundle<TBase extends Controller>(Base: TBase): Bundle<TBase> {
+export function Bundle<TBase extends Controller>(Base: TBase) {
   type Store = StoreType<TBase>;
   const Store = Base.Store.named(Base.name).volatile(self => ({
     $controller: new Base(self)
@@ -54,21 +54,3 @@ type StoreType<TBase extends Controller> = Circular<
     { $controller: InstanceType<TBase> }
   >
 >["Store"];
-
-export interface Bundle<C extends Controller = any> {
-  Store: StoreType<C>;
-  Props: C["Props"];
-  new (...args: any[]): {
-    $model: Instance<
-      IModelType<
-        C["Props"] & {
-          uuid: IOptionalIType<ISimpleType<string>, [undefined]>;
-        },
-        {}
-      >
-    >;
-    $modelBeforeDestroy(): void;
-    $modelAfterAttach(): void;
-    $modelAfterCreate(): void;
-  };
-}

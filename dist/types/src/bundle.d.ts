@@ -27,6 +27,7 @@ export declare function Bundle<TBase extends Controller>(Base: TBase): {
         $modelBeforeDestroy(): void;
         $modelAfterAttach(): void;
         $modelAfterCreate(): void;
+        $resolve<T extends Controller<import("mobx-state-tree").ModelProperties>>(bundleType: T, preicate: (bundle: Instance<T>) => boolean): Instance<T>[];
     };
     Props: TBase["Props"];
     Store: IModelType<TBase["Props"] & {

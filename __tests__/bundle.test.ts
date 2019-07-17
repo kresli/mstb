@@ -2,7 +2,7 @@
 
 import { computed } from "mobx";
 import { types } from "mobx-state-tree";
-import { Bundle, Controller } from "../";
+import { Bundle, Controller } from "../src";
 
 test("resolve bundle inside bundle", () => {
   class Child extends Bundle(
@@ -16,8 +16,7 @@ test("resolve bundle inside bundle", () => {
       age: types.number
     }) {
       public getChild() {
-        return [];
-        // return this.$resolve(Child, child => child.name === "Peter");
+        return this.$resolve(Child, child => child.name === "Peter");
       }
     }
   ) {}

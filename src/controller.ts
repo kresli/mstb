@@ -4,7 +4,6 @@ import {
   IAnyStateTreeNode,
   IModelType,
   Instance,
-  IOptionalIType,
   ISimpleType,
   ModelProperties,
   unprotect
@@ -41,12 +40,12 @@ export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
     public $modelBeforeDestroy() {}
     public $modelAfterAttach() {}
     public $modelAfterCreate() {}
-    // public $resolve<T extends Bundle>(
-    //   bundleType: T,
-    //   preicate: (bundle: Instance<T>) => boolean
-    // ) {
-    //   return [];
-    // }
+    public $resolve<T extends Controller>(
+      bundleType: T,
+      preicate: (bundle: Instance<T>) => boolean
+    ) {
+      return [];
+    }
   }
   return Bundle(ControllerClass);
 }
@@ -55,18 +54,13 @@ export interface Controller<P extends ModelProperties = ModelProperties> {
   Props: P;
   Store: IModelType<P, {}>;
   new (...args: any[]): {
-    $model: Instance<
-      IModelType<
-        P & { uuid: IOptionalIType<ISimpleType<string>, [undefined]> },
-        {}
-      >
-    >;
+    $model: Instance<IModelType<P & { uuid: ISimpleType<string> }, {}>>;
     $modelBeforeDestroy(): void;
     $modelAfterAttach(): void;
     $modelAfterCreate(): void;
-    // $resolve<T extends Bundle>(
-    //   bundleType: T,
-    //   preicate: (bundle: Instance<T>) => boolean
-    // ): Array<Instance<T>>;
+    $resolve<T extends Controller>(
+      bundleType: T,
+      preicate: (bundle: Instance<T>) => boolean
+    ): Array<Instance<T>>;
   };
 }
