@@ -4,7 +4,7 @@
 
 ![CircleCI](https://img.shields.io/circleci/build/github/kresli/mstb.svg?style=flat-square)
 ![Codecov](https://img.shields.io/codecov/c/github/kresli/mstb.svg?style=flat-square)
-![GitHub file size in bytes](https://img.shields.io/github/size/kresli/mstb/lib/index.js.svg?style=flat-square)
+![GitHub file size in bytes](https://img.shields.io/github/size/kresli/mstb/dist/mstb.esm.js.svg?style=flat-square)
 
 - [Simple bundle example](#Simple-bundle-example)
 - [Multi level example](#Multi-bundle-example)
