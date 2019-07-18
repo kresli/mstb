@@ -10,8 +10,10 @@
     "module": "es2015",
     "noStrictGenericChecks": false,
     "experimentalDecorators": true,
-    "strict": true
+    "strict": true,
+    "outDir": "lib/"
   },
+  "files": ["src/index.ts"],
   "include": ["src/**/*", "__tests__/**/*"],
   "exclude": ["node_modules", "dist"]
 }
