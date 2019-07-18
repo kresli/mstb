@@ -1,1 +1,1 @@
-export { Bundle, Controller } from "./internal";
+export { Bundle, Controller, computedAlive, action } from "./internal";

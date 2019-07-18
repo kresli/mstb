@@ -10,6 +10,6 @@ export interface Controller<P extends ModelProperties = ModelProperties> {
         $modelBeforeDestroy(): void;
         $modelAfterAttach(): void;
         $modelAfterCreate(): void;
-        $resolve<T extends Controller>(bundleType: T, preicate: (bundle: Instance<T>) => boolean): Array<Instance<T>>;
+        $resolveIdentifier<T extends Controller>(bundleType: T, identifier: string): InstanceType<T> | null;
     };
 }

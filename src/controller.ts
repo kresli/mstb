@@ -40,6 +40,9 @@ export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
     public $modelBeforeDestroy() {}
     public $modelAfterAttach() {}
     public $modelAfterCreate() {}
+    public $resolveIdentifier() {
+      return null;
+    }
   }
   return Bundle(ControllerClass);
 }
