@@ -2,7 +2,8 @@
 
 # MSTB
 
-![CircleCI](https://circleci.com/gh/kresli/mstb.svg?style=svg)
+![CircleCI](https://img.shields.io/circleci/build/github/kresli/mstb.svg?style=flat-square)
+![Codecov](https://img.shields.io/codecov/c/github/kresli/mstb.svg?style=flat-square)
 
 - [Single Bundle example](#simple-example)
 - [Multi Bundle example](#quick-start)
