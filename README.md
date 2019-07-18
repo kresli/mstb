@@ -6,8 +6,8 @@
 ![Codecov](https://img.shields.io/codecov/c/github/kresli/mstb.svg?style=flat-square)
 ![GitHub file size in bytes](https://img.shields.io/github/size/kresli/mstb/lib/index.js.svg?style=flat-square)
 
-- [Single Bundle example](#simple-example)
-- [Multi Bundle example](#quick-start)
+- [Simple bundle example](#simple-example)
+- [Multi level example](#multi-level-example)
 - [API](#api)
 - [Q&A](#how-to)
 - [Best Practices](#best-practices)
