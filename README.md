@@ -133,7 +133,36 @@ console.log(family.parent.childPeter.name); // "Peter"
 > NOTE in following answers I asume you are using `Controller`, `Bundle` and
 > `@computedAlive` from `mstb` package.
 
-### CAN I USE IT IN EXISTING PROJECT? (TODO)
+---
+
+### CAN I USE IT IN EXISTING PROJECT?
+
+Yes you can. MSTB just bind the controller inside the volatile state which doesn't break current MST
+structure.
+
+```ts
+class BoxCtrl extends Controller({
+  width: types.number,
+  height: types.number
+}) {
+  @computedAlive get boundingBox() {
+    const { width, height } = this.$model;
+    return { width, height };
+  }
+}
+class Box extends Bundle(BoxCtrl) {}
+
+const Model = types.model({
+  box: Box.Store // <-- <Controller>.Store is MST Model
+});
+const model = Model.create({ box: { width: height } });
+// now you can access controller from model
+model.box.$controller.boundingBox; // BoxCtrl.boundingBox
+```
+
+---
+
+### HOW TO CONVERT EXISTING MST TO MSTB (TODO)
 
 ---
 
