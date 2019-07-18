@@ -6,20 +6,30 @@
 ![Codecov](https://img.shields.io/codecov/c/github/kresli/mstb.svg?style=flat-square)
 ![GitHub file size in bytes](https://img.shields.io/github/size/kresli/mstb/lib/index.js.svg?style=flat-square)
 
-- [Simple bundle example](#simple-example)
-- [Multi level example](#multi-level-example)
-- [API](#api)
-- [Q&A](#how-to)
-- [Best Practices](#best-practices)
+- [Simple bundle example](#Simple-bundle-example)
+- [Multi level example](#Multi-bundle-example)
+- [API](#api) TODO
+- [Best Practices](#best-practices) TODO
+- [Q&A](#q&a)
+  - [HOW IT WORKS](#HOW-IT-WORKS)
+  - [CAN I USE IT IN EXISTING PROJECT?](#CAN-I-USE-IT-IN-EXISTING-PROJECT?)
+  - [HOW TO CONVERT EXISTING MST model TO MSTB](#HOW-TO-CONVERT-EXISTING-MST-model-TO-MSTB)
+  - [HOW TO ACCESS MODEL FROM CONTROLLER](#HOW-TO-ACCESS-MODEL-FROM-CONTROLLER)
+  - [HOW TO ACCESS CTONROLLER FROM MODEL](#HOW-TO-ACCESS-CTONROLLER-FROM-MODEL)
+  - [HOW TO CREATE BUNDLE](#HOW-TO-CREATE-BUNDLE)
+  - [IS BUNDLE REQUIRED?](#IS-BUNDLE-REQUIRED?)
+  - [HOW TO EXTEND CONTROLLER](#HOW-TO-EXTEND-CONTROLLER)
+  - [HOW TO EXTEND MODEL](#HOW-TO-EXTEND-MODEL)
+  - [DOES BUNDLE NEED TO BE A CLASS](#DOES-BUNDLE-NEED-TO-BE-A-CLASS)
 
 ## Simple bundle example
 
 ```ts
-const childModel = {
+const props = {
   name: types.string,
   age: types.age
 };
-class ChildCtrl extends Controller(childModel) {
+class ChildCtrl extends Controller(props) {
   restrictAge = 18;
   @computedAlive get messages() {
     return {
@@ -53,8 +63,8 @@ child.accessmessage; // `Access Granted: Welcome Peter.`
 ## Multi bundle example
 
 ```ts
-import { computedAlive, action, Controller, Bundle } from "mstb";
 // child.ts
+import { computedAlive, action, Controller, Bundle } from "mstb";
 class ChildController extends Controller({
   name: types.string
 }) {
@@ -107,7 +117,8 @@ export class Family extends Bundle(FamilyController) {}
 ```ts
 // app.store.ts
 
-// or experimental Family.create({...}) to get $controller stright away.
+// or experimental Family.create({...}) to get $controller stright away
+// but its not recomended for TypeScript
 const family = Family.Store.create({
   parent: {
     name: "Jhon",
@@ -130,8 +141,33 @@ console.log(family.parent.childPeter.name); // "Peter"
 
 ## Q&A
 
-> NOTE in following answers I asume you are using `Controller`, `Bundle` and
+> **NOTE**: in following I asume you are familiar with `mobx` and `mobx-state-tree`
+
+> **NOTE 2**: in following answers I asume you are using `Controller`, `Bundle` and
 > `@computedAlive` from `mstb` package.
+
+---
+
+### HOW IT WORKS
+
+MSTB is build on very simple idea.
+
+- inject bundle's controller instance into `$model` volatile `$controller` property
+- inject MST `$model` in `$controller`
+- inject it in circulation as `$model.$controller.$model.$controller....`
+
+basically in simplified version is equal to following:
+
+```ts
+class Controller {
+  constructor($model) {
+    this.$model = $model;
+  }
+}
+types.model({}).volatile(self => ({
+  $controller: new Controller(self)
+}));
+```
 
 ---
 
@@ -162,19 +198,103 @@ model.box.$controller.boundingBox; // BoxCtrl.boundingBox
 
 ---
 
-### HOW TO CONVERT EXISTING MST TO MSTB (TODO)
+### HOW TO CONVERT EXISTING MST model TO MSTB
+
+It's very simple and straight forward to convert existing store to bundle.
+
+- model props became Controller props
+- views became `@computedAlive` getters
+- actions became `@action` methods
+- volatile became property of class
+- accessing `self` model property would be change to `this.$model`
+- accessing `self` any other member then property became `this`
+
+Lets see an example
+
+Original code:
+
+```ts
+const Store = types
+  .model({
+    title: types.string
+  })
+  .views(self => ({
+    get upper() {
+      return self.title.toUppoerCase();
+    }
+  }))
+  .actions(self => ({
+    setTitle(title: string) {
+      self.title = title;
+    }
+  }))
+  .volatile(self => ({
+    temporaryValue: 24
+  }));
+```
+
+Now let's see converted:
+
+```ts
+class StoreCtrl extends Controller({
+  title: types.string
+}) {
+  @computedAlive get upper() {
+    return this.$model.title.toUpperCase();
+  }
+  @action setTitle(title: string) {
+    this.$model.title = title;
+  }
+  temporaryValue = 24;
+}
+class Store extends Bundle(StoreCtrl) {}
+```
 
 ---
 
-### HOW IT WORKS (TODO)
+### HOW TO ACCESS MODEL FROM CONTROLLER
+
+Its just simple as `this.$model`
+
+```ts
+class BoxCtrl extends Controller({
+  width: types.number,
+  height: types.number
+}) {
+  boundingBox = {
+    width: this.$model.width,
+    height: this.$model.height
+  };
+}
+class Box extends Bundle(BoxCtrl) {}
+```
 
 ---
 
-### HOW TO ACCESS MODEL FROM CONTROLLER (TODO)
+### HOW TO ACCESS CTONROLLER FROM MODEL
 
----
+Its just simple as `self.$controller`
 
-### HOW TO ACCESS CTONROLLER FROM MODEL (TODO)
+```ts
+class BoxCtrl extends Controller({
+  width: types.number,
+  height: types.number
+}) {
+  @computedAlive get boundingBox() {
+    return {
+      width: this.$model.width,
+      height: this.$model.height
+    }
+}
+class Box extends Bundle(BoxCtrl) {}
+
+// box is MST model
+const box = Box.Store.create({width: 0, heigth: 0});
+// lets access controller method
+box.$controller.boundingBox
+// and of course cirulation works
+box.$controller.$model.$controller.$model.$controller.$model === box // true
+```
 
 ---
 
@@ -247,11 +367,11 @@ class Rect extends Bundle(RectCtrl) {}
 
 ### HOW TO EXTEND MODEL
 
-You can't. Once model is created is non extendable. There is good reason for it.
-It would bring vulnerability to your bundle. If one of existing keys would be replaced
-by new type eg `title: types.string` to `title: types.number` your could end up
+Simply, you can't. Once model is created is non extendable. There is good reason for it.
+It would bring vulnerability to your bundle if one of existing keys would be replaced
+by a new type eg `title: types.string` to `title: types.number` your could end up
 with runtime errors if your `setTitle()` expect work with string. There for mixin
-and extending is no go for now. **Composition** to the rescue!
+and extending is no-go for now. **Composition** to the rescue!
 
 Just simply create another bundle which will contain additional model keys plus
 required model and expose any controller member.
@@ -286,7 +406,8 @@ class Rect extends Bundle(RectCtrl) {}
 | ---------- | ---------- |
 | NO         | YES        |
 
-In Javascript you can simply use method without class eg:
+Its necessary to keep bundle as a class in TypeScript to simplify types, but not neccessary in Javascript.
+In Javascript you can simply use method without class.
 
 ```js
 class BoxCtrl extends Controller({}) {}
