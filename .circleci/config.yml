@@ -40,3 +40,5 @@ jobs:
           command: yarn test:ci --collectCoverage=true
       - store_artifacts:
           path: coverage
+      - codecov/upload:
+        file: coverage
