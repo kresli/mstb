@@ -26,27 +26,30 @@ export default {
   ],
 
   output: [
-    // {
-    //   file: pkg.main,
-    //   format: "cjs"
-    // },
+    {
+      file: pkg.main,
+      format: "cjs"
+    },
     {
       file: pkg.module,
       format: "es",
       globals: {
         mobx: "mobx"
-        // mobxStateTree: "mobx-state-tree"
       },
       name
-    }
-    // {
-    //   file: pkg.browser,
-    //   format: "iife",
-    //   name,
+    },
+    {
+      file: pkg.browser,
+      format: "iife",
+      name,
 
-    //   // https://rollupjs.org/guide/en#output-globals-g-globals
-    //   globals: {}
-    // }
+      // https://rollupjs.org/guide/en#output-globals-g-globals
+      globals: {
+        mobx: "mobx",
+        "mobx-state-tree": "mobx-state-tree",
+        uuid: "uuid"
+      }
+    }
   ],
   onwarn(warning, warn) {
     if (warning.code !== "CIRCULAR_DEPENDENCY") {

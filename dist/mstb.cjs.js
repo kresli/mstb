@@ -1,9 +1,14 @@
-import { computed } from 'mobx';
-export { action } from 'mobx';
-import { types, unprotect, getRoot, resolveIdentifier } from 'mobx-state-tree';
-import guid from 'uuid';
+'use strict';
 
-var computedAlive = computed({
+Object.defineProperty(exports, '__esModule', { value: true });
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var mobx = require('mobx');
+var mobxStateTree = require('mobx-state-tree');
+var guid = _interopDefault(require('uuid'));
+
+var computedAlive = mobx.computed({
   keepAlive: true
 });
 
@@ -77,8 +82,8 @@ function _possibleConstructorReturn(self, call) {
 }
 
 function Controller(Props) {
-  var uuid = Props.uuid ? Props.uuid : types.optional(types.identifier, guid());
-  var Store = types.model().props({
+  var uuid = Props.uuid ? Props.uuid : mobxStateTree.types.optional(mobxStateTree.types.identifier, guid());
+  var Store = mobxStateTree.types.model().props({
     uuid: uuid
   }).props(Props).actions(function (self) {
     return {
@@ -101,7 +106,7 @@ function Controller(Props) {
       _classCallCheck(this, ControllerClass);
 
       this.$model = $model;
-      unprotect(getRoot(this.$model));
+      mobxStateTree.unprotect(mobxStateTree.getRoot(this.$model));
     }
 
     _createClass(ControllerClass, [{
@@ -168,7 +173,7 @@ function Bundle(Base) {
     _createClass(BundleBase, [{
       key: "$resolveIdentifier",
       value: function $resolveIdentifier(BundleType, uuid) {
-        var model = resolveIdentifier(BundleType.Store, this.$model, uuid);
+        var model = mobxStateTree.resolveIdentifier(BundleType.Store, this.$model, uuid);
         return model ? model.$controller : null;
       }
     }]);
@@ -181,4 +186,12 @@ function Bundle(Base) {
   return BundleBase;
 }
 
-export { Bundle, Controller, computedAlive };
+Object.defineProperty(exports, 'action', {
+  enumerable: true,
+  get: function () {
+    return mobx.action;
+  }
+});
+exports.Bundle = Bundle;
+exports.Controller = Controller;
+exports.computedAlive = computedAlive;
