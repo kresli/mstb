@@ -21,7 +21,7 @@
     "url": "git+https://github.com/kresli/mstb.git"
   },
   "author": "Eduard Jacko",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/kresli/mstb/issues"
   },
