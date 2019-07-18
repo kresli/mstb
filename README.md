@@ -1,6 +1,6 @@
 # MSTB
 
-[![CircleCI]](https://circleci.com/gh/kresli/mstb/tree/master.svg?style=svg)(https://circleci.com/gh/kresli/mstb/tree/master)
+[![CircleCI](https://circleci.com/gh/kresli/mstb/tree/master.svg?style=svg)](https://circleci.com/gh/kresli/mstb/tree/master)
 
 - [Single Bundle example](#simple-example)
 - [Multi Bundle example](#quick-start)
