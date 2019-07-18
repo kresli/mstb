@@ -1,47 +1,61 @@
 // tslint:disable: max-classes-per-file
 
-import { computed } from "mobx";
 import { types } from "mobx-state-tree";
-import { Bundle, Controller } from "../src";
+import { action, Bundle, computedAlive, Controller } from "../src";
 
 test("resolve bundle inside bundle", () => {
-  class Child extends Bundle(
-    class ChildController extends Controller({
-      name: types.string
-    }) {}
-  ) {}
-  class Parent extends Bundle(
-    class ParentController extends Controller({
-      name: types.string,
-      age: types.number
-    }) {
-      public getChild() {
-        return this.$resolve(Child, child => child.name === "Peter");
-      }
+  class ChildController extends Controller({
+    name: types.string
+  }) {
+    @computedAlive public get name() {
+      return this.$model.name;
     }
-  ) {}
+    @action public setName(name: string) {
+      this.$model.name = name;
+    }
+  }
+  class Child extends Bundle(ChildController) {}
+
+  class ParentController extends Controller({
+    name: types.string,
+    age: types.number
+  }) {
+    @computedAlive public get son() {
+      return this.$resolveIdentifier(Child, "son");
+    }
+  }
+  class Parent extends Bundle(ParentController) {}
   class FamilyController extends Controller({
-    parent: Bundle(Parent).Store,
+    parent: Parent.Store,
     kids: types.array(Child.Store)
   }) {
-    @computed get parent() {
+    @computedAlive get parent() {
       return this.$model.parent.$controller;
     }
-    @computed get kids() {
+    @computedAlive get kids() {
       return this.$model.kids.map(k => k.$controller);
     }
   }
   class Family extends Bundle(FamilyController) {}
-  const family = Bundle(Family).Store.create({
+  const family = Family.create({
     parent: {
       name: "Jhon",
       age: 36
     },
     kids: [
       {
+        uuid: "son",
         name: "Peter"
+      },
+      {
+        name: "Anna"
       }
     ]
-  }).$controller;
-  expect(family.parent.getChild());
+  });
+  const child = family.parent.son!;
+  expect(child).toBeDefined();
+  expect(child).toEqual(family.kids[0]);
+  child.setName("Jhon");
+  expect(child.name).toEqual("Jhon");
+  expect(family.parent.son!.name).toEqual("Jhon");
 });
