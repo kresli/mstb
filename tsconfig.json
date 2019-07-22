@@ -7,7 +7,7 @@
     "declarationDir": "dist/types",
     "declaration": true,
     "target": "es2015",
-    "module": "es2015",
+    "module": "commonjs",
     "noStrictGenericChecks": false,
     "experimentalDecorators": true,
     "strict": true,
