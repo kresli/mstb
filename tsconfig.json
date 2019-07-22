@@ -6,9 +6,10 @@
     "noUnusedLocals": true,
     "declarationDir": "dist/types",
     "declaration": true,
-    "target": "es2015",
-    "module": "commonjs",
+    "target": "es5",
+    "module": "es2015",
     "noStrictGenericChecks": false,
+    "sourceMap": false,
     "experimentalDecorators": true,
     "strict": true,
     "outDir": "lib/"
