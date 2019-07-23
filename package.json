@@ -1,6 +1,6 @@
 {
   "name": "mstb",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "description": "",
   "main": "dist/mstb.cjs.js",
   "module": "dist/mstb.esm.js",
@@ -12,7 +12,7 @@
   "scripts": {
     "clean": "shx rm -rf dist && shx rm -rf lib",
     "build": "yarn clean && tsc --p tsconfig.prod.json && rollup -c",
-    "prepublish": "yarn build",
+    "prepublishOnly": "yarn test:ci && yarn build",
     "lint": "tslint -c ./tslint.json 'src/**/*.ts'",
     "test": "jest --watch",
     "test:ci": "jest"
