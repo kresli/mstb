@@ -4,21 +4,15 @@ import {
   IAnyStateTreeNode,
   IModelType,
   Instance,
-  ISimpleType,
   ModelProperties,
   unprotect
 } from "mobx-state-tree";
 import { types } from "mobx-state-tree";
-import guid from "uuid";
 import { Bundle } from "./internal";
 
 export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
-  const uuid = Props.uuid
-    ? Props.uuid
-    : types.optional(types.identifier, guid());
   const Store = types
     .model()
-    .props({ uuid })
     .props(Props)
     .actions(self => ({
       afterCreate() {
@@ -51,7 +45,7 @@ export interface Controller<P extends ModelProperties = ModelProperties> {
   Props: P;
   Store: IModelType<P, {}>;
   new (...args: any[]): {
-    $model: Instance<IModelType<P & { uuid: ISimpleType<string> }, {}>>;
+    $model: Instance<IModelType<P, {}>>;
     $modelBeforeDestroy(): void;
     $modelAfterAttach(): void;
     $modelAfterCreate(): void;

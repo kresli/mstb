@@ -5,6 +5,7 @@ import { action, Bundle, computedAlive, Controller } from "../src";
 
 test("resolve bundle inside bundle", () => {
   class ChildController extends Controller({
+    uuid: types.identifier,
     name: types.string
   }) {
     @computedAlive public get name() {
@@ -48,6 +49,7 @@ test("resolve bundle inside bundle", () => {
         name: "Peter"
       },
       {
+        uuid: "daughter",
         name: "Anna"
       }
     ]

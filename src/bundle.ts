@@ -2,8 +2,6 @@ import {
   IAnyModelType,
   IModelType,
   Instance,
-  IOptionalIType,
-  ISimpleType,
   resolveIdentifier,
   SnapshotIn
 } from "mobx-state-tree";
@@ -36,9 +34,9 @@ export function Bundle<TBase extends Controller>(Base: TBase) {
     }
     public $resolveIdentifier<T extends Controller>(
       BundleType: T,
-      uuid: string
+      guid: string
     ) {
-      const model = resolveIdentifier(BundleType.Store, this.$model, uuid);
+      const model = resolveIdentifier(BundleType.Store, this.$model, guid);
       return model ? model.$controller : null;
     }
   }
@@ -57,10 +55,5 @@ export interface Circular<C extends Controller, M extends IAnyModelType>
 interface StoreType<TBase extends Controller>
   extends Circular<
     TBase,
-    IModelType<
-      TBase["Props"] & {
-        uuid: IOptionalIType<ISimpleType<string>, [undefined]>;
-      },
-      { $controller: InstanceType<TBase> }
-    >
+    IModelType<TBase["Props"], { $controller: InstanceType<TBase> }>
   > {}
