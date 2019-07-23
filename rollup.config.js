@@ -4,7 +4,7 @@ import babel from "rollup-plugin-babel";
 import pkg from "./package.json";
 import builtins from "rollup-plugin-node-builtins";
 import json from "rollup-plugin-json";
-import replace from "rollup-plugin-replace";
+import "crypto";
 
 const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
@@ -16,16 +16,9 @@ export default {
   external: ["mobx-state-tree", "mobx"],
 
   plugins: [
-    replace({
-      include: ["node_modules/uuid/**"],
-      delimiters: ["", ""],
-      values: {
-        "crypto.randomBytes": "require('randombytes')"
-      }
-    }),
     // Allows node_modules resolution
     resolve({ extensions, preferBuiltins: true }),
-    builtins(),
+    builtins({ crypto: true }),
     // Allow bundling cjs modules. Rollup doesn't understand cjs
     commonjs(),
     json(),
