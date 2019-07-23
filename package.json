@@ -48,6 +48,7 @@
     "mobx": "^5.10.1",
     "mobx-state-tree": "3.14.0",
     "prettier": "^1.18.2",
+    "randombytes": "^2.1.0",
     "rollup": "^1.16.2",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-commonjs": "^10.0.1",

@@ -15,9 +15,16 @@ export default {
   external: ["mobx-state-tree", "mobx"],
 
   plugins: [
+    replace({
+      include: ["node_modules/uuid/**"],
+      delimiters: ["", ""],
+      values: {
+        "crypto.randomBytes": "require('randombytes')"
+      }
+    }),
     // Allows node_modules resolution
     resolve({ extensions, preferBuiltins: true }),
-    builtins({ crypto: true }),
+    builtins(),
     // Allow bundling cjs modules. Rollup doesn't understand cjs
     commonjs(),
     json(),
