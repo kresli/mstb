@@ -3,6 +3,7 @@ import resolve from "rollup-plugin-node-resolve";
 import babel from "rollup-plugin-babel";
 import pkg from "./package.json";
 import builtins from "rollup-plugin-node-builtins";
+import json from "rollup-plugin-json";
 
 const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
@@ -19,6 +20,7 @@ export default {
     builtins({ crypto: true }),
     // Allow bundling cjs modules. Rollup doesn't understand cjs
     commonjs(),
+    json(),
 
     // Compile TypeScript/JavaScript files
     babel({ extensions, include: ["src/**/*"] })
