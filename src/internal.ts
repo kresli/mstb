@@ -1,3 +1,3 @@
-export * from "./helpers";
+export * from "./utils";
 export * from "./controller";
 export * from "./bundle";

@@ -1,1 +1,9 @@
-export { Bundle, Controller, computedAlive, action } from "./internal";
+export {
+  Bundle,
+  Controller,
+  computedAlive,
+  action,
+  extractBundleArray,
+  extractBundleObject,
+  extractBundle
+} from "./internal";

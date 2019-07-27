@@ -43,6 +43,8 @@ export function Bundle<TBase extends Controller>(Base: TBase) {
   return BundleBase;
 }
 
+export interface BundleType extends ReturnType<typeof Bundle> {}
+
 export interface Circular<C extends Controller, M extends IAnyModelType>
   extends IModelType<
     ExtractProps<M>,
@@ -52,7 +54,7 @@ export interface Circular<C extends Controller, M extends IAnyModelType>
       };
     }
   > {}
-interface StoreType<TBase extends Controller>
+export interface StoreType<TBase extends Controller = any>
   extends Circular<
     TBase,
     IModelType<TBase["Props"], { $controller: InstanceType<TBase> }>
