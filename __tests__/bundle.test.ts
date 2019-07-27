@@ -1,6 +1,6 @@
 // tslint:disable: max-classes-per-file
 
-import { types } from "mobx-state-tree";
+import { cast, types } from "mobx-state-tree";
 import { action, Bundle, computedAlive, Controller } from "../src";
 
 test("resolve bundle inside bundle", () => {
@@ -60,4 +60,62 @@ test("resolve bundle inside bundle", () => {
   child.setName("Jhon");
   expect(child.name).toEqual("Jhon");
   expect(family.parent.son!.name).toEqual("Jhon");
+});
+
+test("resolveIdentifier fallback to null if not found", () => {
+  class Child extends Bundle(Controller({})) {}
+  class ParentCtrl extends Controller({}) {
+    @computedAlive public get unresolvedReference() {
+      return this.$resolveIdentifier(Child, "");
+    }
+  }
+  class Parent extends Bundle(ParentCtrl) {}
+  expect(Parent.Store.create({}).$controller.unresolvedReference).toBeNull();
+});
+
+test("resolveIdentifier return Bundle", () => {
+  class Child extends Bundle(
+    class extends Controller({
+      guid: types.identifier
+    }) {}
+  ) {}
+  class ParentCtrl extends Controller({
+    children: types.array(Child.Store)
+  }) {
+    @computedAlive public get child() {
+      return this.$resolveIdentifier(Child, "child");
+    }
+  }
+  class Parent extends Bundle(ParentCtrl) {}
+  const parent = Parent.Store.create({
+    children: [{ guid: "child" }]
+  }).$controller;
+  expect(parent.child!.$model).toBe(parent.$model.children[0]);
+});
+
+test("call $modelBeforeDestroy on destroy", () => {
+  const destroySpy = jest.fn();
+  class Child extends Bundle(
+    class extends Controller({ title: types.string }) {
+      public $modelBeforeDestroy() {
+        destroySpy();
+      }
+    }
+  ) {}
+  class ParentCtrl extends Controller({
+    children: types.array(Child.Store)
+  }) {
+    @computedAlive public get unresolvedReference() {
+      return this.$resolveIdentifier(Child, "");
+    }
+  }
+  class Parent extends Bundle(ParentCtrl) {}
+  const parent = Parent.Store.create({
+    children: [{ title: "child" }]
+  }).$controller;
+  expect(parent.$model.children).toHaveLength(1);
+  expect(destroySpy).toHaveBeenCalledTimes(0);
+  parent.$model.children = cast([]);
+  expect(parent.$model.children).toHaveLength(0);
+  expect(destroySpy).toHaveBeenCalledTimes(1);
 });

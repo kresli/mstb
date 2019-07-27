@@ -34,11 +34,9 @@ export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
     public $modelBeforeDestroy() {}
     public $modelAfterAttach() {}
     public $modelAfterCreate() {}
-    public $resolveIdentifier() {
-      return null;
-    }
+    public $resolveIdentifier() {}
   }
-  return Bundle(ControllerClass);
+  return Bundle(ControllerClass as Controller<P>);
 }
 
 export interface Controller<P extends ModelProperties = ModelProperties> {
