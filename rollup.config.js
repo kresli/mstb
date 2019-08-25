@@ -7,7 +7,7 @@ const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
 export default {
   input: "./src/index.ts",
-  external: ["mobx-state-tree", "mobx"],
+  external: ["mobx-state-tree", "mobx", "uuid"],
   plugins: [
     resolve({ extensions, preferBuiltins: true }),
     babel({ extensions, include: ["src/**/*"] }),
@@ -23,15 +23,6 @@ export default {
       format: "esm",
       globals: {
         mobx: "mobx"
-      }
-    },
-    {
-      file: pkg.browser,
-      format: "umd",
-      name: "mstb",
-      globals: {
-        mobx: "mobx",
-        "mobx-state-tree": "mobx-state-tree"
       }
     }
   ],
