@@ -1,4 +1,3 @@
-import { observable } from "mobx";
 import {
   getRoot,
   IAnyModelType,
