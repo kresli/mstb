@@ -19,7 +19,7 @@ test("circular", () => {
 
 test("resolve bundle inside bundle", () => {
   class ChildController extends Controller({
-    guid: types.identifier,
+    uuid: types.identifier,
     name: types.string
   }) {
     @computedAlive public get name() {
@@ -59,11 +59,11 @@ test("resolve bundle inside bundle", () => {
     },
     kids: [
       {
-        guid: "son",
+        uuid: "son",
         name: "Peter"
       },
       {
-        guid: "daughter",
+        uuid: "daughter",
         name: "Anna"
       }
     ]
@@ -92,7 +92,7 @@ test("resolveIdentifier fallback to null if not found", () => {
 test("resolveIdentifier return Bundle", () => {
   class Child extends Bundle(
     class extends Controller({
-      guid: types.identifier
+      uuid: types.identifier
     }) {}
   ) {}
   class ParentCtrl extends Controller({
@@ -104,7 +104,7 @@ test("resolveIdentifier return Bundle", () => {
   }
   class Parent extends Bundle(ParentCtrl) {}
   const parent = Parent.Store.create({
-    children: [{ guid: "child" }]
+    children: [{ uuid: "child" }]
   }).$controller;
   expect(parent.child!.$model).toBe(parent.$model.children[0]);
 });

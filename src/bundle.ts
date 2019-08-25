@@ -41,12 +41,12 @@ export function Bundle<TBase extends Controller>(Base: TBase) {
     ): Array<InstanceType<T>>;
     public $resolveByType<T extends Controller>(
       BundleType: T,
-      guid?: string
+      uuid?: string
     ): InstanceType<T> | null;
-    public $resolveByType<T extends Controller>(BundleType: T, guid?: string) {
-      if (guid) {
+    public $resolveByType<T extends Controller>(BundleType: T, uuid?: string) {
+      if (uuid) {
         const model =
-          resolveIdentifier(BundleType.Store, this.$model, guid) || null;
+          resolveIdentifier(BundleType.Store, this.$model, uuid) || null;
         return model ? model.$controller : null;
       }
       const cache = Array.from(
@@ -79,7 +79,7 @@ export interface StoreType<TBase extends Controller = any>
     TBase,
     IModelType<
       TBase["Props"] & {
-        guid: IOptionalIType<ISimpleType<string>, [undefined]>;
+        uuid: IOptionalIType<ISimpleType<string>, [undefined]>;
       },
       {
         $controller: InstanceType<TBase>;

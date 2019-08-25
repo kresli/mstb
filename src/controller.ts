@@ -16,7 +16,7 @@ import { Bundle } from "./internal";
 export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
   const Store = types
     .model({
-      guid: types.optional(types.identifier, () => uuid())
+      uuid: types.optional(types.identifier, () => uuid())
     })
     .props(Props)
     .actions(self => ({
@@ -52,7 +52,7 @@ export interface Controller<P extends ModelProperties = ModelProperties> {
   new (...args: any[]): {
     $model: Instance<
       IModelType<
-        P & { guid: IOptionalIType<ISimpleType<string>, [undefined]> },
+        P & { uuid: IOptionalIType<ISimpleType<string>, [undefined]> },
         {}
       >
     >;
@@ -62,7 +62,7 @@ export interface Controller<P extends ModelProperties = ModelProperties> {
     $resolveByType<T extends Controller>(BundleType: T): Array<InstanceType<T>>;
     $resolveByType<T extends Controller>(
       BundleType: T,
-      guid?: string
+      uuid?: string
     ): InstanceType<T> | null;
   };
 }
