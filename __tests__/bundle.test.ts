@@ -2,6 +2,21 @@
 import { cast, types } from "mobx-state-tree";
 import { action, Bundle, computedAlive, Controller } from "../src";
 
+test("circular", () => {
+  class ChildController extends Controller({
+    name: types.optional(types.string, "")
+  }) {
+    @computedAlive public get name() {
+      return this.$model.name;
+    }
+  }
+  class Child extends Bundle(ChildController) {}
+  const child = Child.Store.create({}).$controller;
+  expect(
+    child.$model.$controller.$model.$controller.$model.$controller
+  ).toEqual(child);
+});
+
 test("resolve bundle inside bundle", () => {
   class ChildController extends Controller({
     guid: types.identifier,

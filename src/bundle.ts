@@ -4,6 +4,8 @@ import {
   IAnyModelType,
   IModelType,
   Instance,
+  IOptionalIType,
+  ISimpleType,
   resolveIdentifier,
   SnapshotIn
 } from "mobx-state-tree";
@@ -31,7 +33,7 @@ export function Bundle<TBase extends Controller>(Base: TBase) {
     }
 
     @observable public map = observable.map();
-    public $model!: Instance<Store>;
+    public $model!: Instance<IAnyModelType>;
     constructor(...args: any[]) {
       super(...args);
       this.$model = args[0];
@@ -51,7 +53,7 @@ export function Bundle<TBase extends Controller>(Base: TBase) {
       }
       const cache = Array.from(
         this.$root.$treenode.identifierCache.cache.values()
-      ) as Array<{ type: IAnyModelType; $controller: any }>[];
+      ) as Array<Array<{ type: IAnyModelType; $controller: any }>>;
       const models = cache.reduce((a, v) => [...a, ...v], []);
       const filtered = models.filter(m => m.type === BundleType.Store);
       return filtered.map(({ $controller }) => $controller);
@@ -77,5 +79,12 @@ export interface Circular<C extends Controller, M extends IAnyModelType>
 export interface StoreType<TBase extends Controller = any>
   extends Circular<
     TBase,
-    IModelType<TBase["Props"], { $controller: InstanceType<TBase> }>
+    IModelType<
+      TBase["Props"] & {
+        guid: IOptionalIType<ISimpleType<string>, [undefined]>;
+      },
+      {
+        $controller: InstanceType<TBase>;
+      }
+    >
   > {}

@@ -21,13 +21,13 @@ export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
     .props(Props)
     .actions(self => ({
       afterCreate() {
-        (self as { $controller: any }).$controller.$modelAfterCreate();
+        self.$controller.$modelAfterCreate();
       },
       beforeDestroy() {
-        (self as { $controller: any }).$controller.$modelBeforeDestroy();
+        self.$controller.$modelBeforeDestroy();
       },
       afterAttach() {
-        (self as { $controller: any }).$controller.$modelAfterAttach();
+        self.$controller.$modelAfterAttach();
       }
     }));
   class ControllerClass {
