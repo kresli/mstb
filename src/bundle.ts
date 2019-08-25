@@ -32,7 +32,6 @@ export function Bundle<TBase extends Controller>(Base: TBase) {
         .$controller as Instance<Store>["$controller"];
     }
 
-    @observable public map = observable.map();
     public $model!: Instance<IAnyModelType>;
     constructor(...args: any[]) {
       super(...args);
