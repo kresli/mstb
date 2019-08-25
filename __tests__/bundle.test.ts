@@ -1,11 +1,10 @@
 // tslint:disable: max-classes-per-file
-
 import { cast, types } from "mobx-state-tree";
 import { action, Bundle, computedAlive, Controller } from "../src";
 
 test("resolve bundle inside bundle", () => {
   class ChildController extends Controller({
-    uuid: types.identifier,
+    guid: types.identifier,
     name: types.string
   }) {
     @computedAlive public get name() {
@@ -22,7 +21,7 @@ test("resolve bundle inside bundle", () => {
     age: types.number
   }) {
     @computedAlive public get son() {
-      return this.$resolveIdentifier(Child, "son");
+      return this.$resolveByType(Child, "son");
     }
   }
   class Parent extends Bundle(ParentController) {}
@@ -45,11 +44,11 @@ test("resolve bundle inside bundle", () => {
     },
     kids: [
       {
-        uuid: "son",
+        guid: "son",
         name: "Peter"
       },
       {
-        uuid: "daughter",
+        guid: "daughter",
         name: "Anna"
       }
     ]
@@ -66,11 +65,13 @@ test("resolveIdentifier fallback to null if not found", () => {
   class Child extends Bundle(Controller({})) {}
   class ParentCtrl extends Controller({}) {
     @computedAlive public get unresolvedReference() {
-      return this.$resolveIdentifier(Child, "");
+      return this.$resolveByType(Child, "");
     }
   }
   class Parent extends Bundle(ParentCtrl) {}
-  expect(Parent.Store.create({}).$controller.unresolvedReference).toBeNull();
+  expect(Parent.Store.create({}).$controller.unresolvedReference).toHaveLength(
+    0
+  );
 });
 
 test("resolveIdentifier return Bundle", () => {
@@ -83,7 +84,7 @@ test("resolveIdentifier return Bundle", () => {
     children: types.array(Child.Store)
   }) {
     @computedAlive public get child() {
-      return this.$resolveIdentifier(Child, "child");
+      return this.$resolveByType(Child, "child");
     }
   }
   class Parent extends Bundle(ParentCtrl) {}
@@ -106,7 +107,7 @@ test("call $modelBeforeDestroy on destroy", () => {
     children: types.array(Child.Store)
   }) {
     @computedAlive public get unresolvedReference() {
-      return this.$resolveIdentifier(Child, "");
+      return this.$resolveByType(Child, "");
     }
   }
   class Parent extends Bundle(ParentCtrl) {}
@@ -118,4 +119,57 @@ test("call $modelBeforeDestroy on destroy", () => {
   parent.$model.children = cast([]);
   expect(parent.$model.children).toHaveLength(0);
   expect(destroySpy).toHaveBeenCalledTimes(1);
+});
+
+test("$resolveByType", () => {
+  class ChildCtrl extends Controller({ title: types.string }) {
+    @computedAlive public get all() {
+      return this.$resolveByType(Child);
+    }
+  }
+  class Child extends Bundle(ChildCtrl) {}
+  class ParentCtrl extends Controller({
+    children: types.array(Child.Store)
+  }) {
+    @computedAlive public get children() {
+      return this.$model.children.map(({ $controller }) => $controller);
+    }
+  }
+  class Parent extends Bundle(ParentCtrl) {}
+  const parent = Parent.Store.create({
+    children: [{ title: "child-a" }, { title: "child-b" }]
+  }).$controller;
+  expect(parent.children[0].all).toHaveLength(2);
+});
+
+test("resolveByType should recomputed only on data changes", () => {
+  class ChildCtrl extends Controller({ title: types.string }) {
+    @computedAlive public get all() {
+      return this.$resolveByType(Child);
+    }
+  }
+  class Child extends Bundle(ChildCtrl) {}
+  class ParentCtrl extends Controller({
+    children: types.array(Child.Store)
+  }) {
+    @computedAlive public get children() {
+      return this.$model.children.map(({ $controller }) => $controller);
+    }
+  }
+  class Parent extends Bundle(ParentCtrl) {}
+  const parent = Parent.Store.create({
+    children: [{ title: "child-a" }, { title: "child-b" }]
+  }).$controller;
+  const child = parent.children[0];
+  jest.spyOn(child, "$resolveByType");
+  expect(child.$resolveByType).not.toHaveBeenCalled();
+  expect(parent.children[0].all).toHaveLength(2);
+  expect(child.$resolveByType).toHaveBeenCalledTimes(1);
+  expect(parent.children[0].all).toHaveLength(2);
+  expect(child.$resolveByType).toHaveBeenCalledTimes(1);
+
+  parent.$model.children.push({ title: "child-c" });
+
+  expect(parent.children[0].all).toHaveLength(3);
+  expect(child.$resolveByType).toHaveBeenCalledTimes(2);
 });

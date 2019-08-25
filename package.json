@@ -32,7 +32,10 @@
     "mobx": ">=4.8.0 <5.0.0 || >=5.8.0 <6.0.0",
     "mobx-state-tree": "3.14.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@types/uuid": "^3.4.5",
+    "uuid": "^3.3.3"
+  },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.5",

@@ -1,4 +1,6 @@
+import { observable } from "mobx";
 import {
+  getRoot,
   IAnyModelType,
   IModelType,
   Instance,
@@ -7,6 +9,7 @@ import {
 } from "mobx-state-tree";
 import { ExtractProps } from "mobx-state-tree/dist/internal";
 import { Controller } from "./internal";
+import { computedAlive } from "./utils";
 
 export function Bundle<TBase extends Controller>(Base: TBase) {
   type Store = StoreType<TBase>;
@@ -26,18 +29,35 @@ export function Bundle<TBase extends Controller>(Base: TBase) {
       return (Store.create(snap) as { $controller: any })
         .$controller as Instance<Store>["$controller"];
     }
-    public $model!: Instance<Store>;
 
+    @observable public map = observable.map();
+    public $model!: Instance<Store>;
     constructor(...args: any[]) {
       super(...args);
       this.$model = args[0];
     }
-    public $resolveIdentifier<T extends Controller>(
+    public $resolveByType<T extends Controller>(
+      BundleType: T
+    ): Array<InstanceType<T>>;
+    public $resolveByType<T extends Controller>(
       BundleType: T,
-      guid: string
-    ) {
-      const model = resolveIdentifier(BundleType.Store, this.$model, guid);
-      return model ? model.$controller : null;
+      guid?: string
+    ): InstanceType<T> | null;
+    public $resolveByType<T extends Controller>(BundleType: T, guid?: string) {
+      if (guid) {
+        const model =
+          resolveIdentifier(BundleType.Store, this.$model, guid) || null;
+        return model ? model.$controller : null;
+      }
+      const cache = Array.from(
+        this.$root.$treenode.identifierCache.cache.values()
+      ) as Array<{ type: IAnyModelType; $controller: any }>[];
+      const models = cache.reduce((a, v) => [...a, ...v], []);
+      const filtered = models.filter(m => m.type === BundleType.Store);
+      return filtered.map(({ $controller }) => $controller);
+    }
+    @computedAlive public get $root() {
+      return getRoot(this.$model);
     }
   }
   return BundleBase;
