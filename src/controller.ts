@@ -1,7 +1,6 @@
 // tslint:disable: no-empty
 import {
   getRoot,
-  IAnyModelType,
   IAnyStateTreeNode,
   IModelType,
   Instance,

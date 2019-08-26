@@ -1,5 +1,4 @@
 import {
-  getRoot,
   IAnyModelType,
   IModelType,
   Instance,
