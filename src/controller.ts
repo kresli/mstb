@@ -35,7 +35,7 @@ export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
     public static Props = Props;
     public static Store = Store;
     constructor(public $model: Instance<typeof Store>) {
-      unprotect(this.$root.$model);
+      unprotect(getRoot(this.$model as IAnyStateTreeNode));
     }
     @computedAlive public get $root(): InstanceType<Controller> {
       const model = this.$model as IAnyStateTreeNode;
