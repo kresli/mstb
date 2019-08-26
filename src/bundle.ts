@@ -10,7 +10,6 @@ import {
 } from "mobx-state-tree";
 import { ExtractProps } from "mobx-state-tree/dist/internal";
 import { Controller } from "./internal";
-import { computedAlive } from "./utils";
 
 export function Bundle<TBase extends Controller>(Base: TBase) {
   type Store = StoreType<TBase>;
@@ -50,14 +49,11 @@ export function Bundle<TBase extends Controller>(Base: TBase) {
         return model ? model.$controller : null;
       }
       const cache = Array.from(
-        this.$root.$treenode.identifierCache.cache.values()
+        this.$root.$model.$treenode.identifierCache.cache.values()
       ) as Array<Array<{ type: IAnyModelType; $controller: any }>>;
       const models = cache.reduce((a, v) => [...a, ...v], []);
       const filtered = models.filter(m => m.type === BundleType.Store);
       return filtered.map(({ $controller }) => $controller);
-    }
-    @computedAlive public get $root() {
-      return getRoot(this.$model);
     }
   }
   return BundleBase;

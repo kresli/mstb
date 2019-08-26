@@ -1,17 +1,19 @@
 // tslint:disable: no-empty
 import {
   getRoot,
+  IAnyModelType,
   IAnyStateTreeNode,
   IModelType,
   Instance,
   IOptionalIType,
   ISimpleType,
+  isRoot,
   ModelProperties,
   unprotect
 } from "mobx-state-tree";
 import { types } from "mobx-state-tree";
 import uuid from "uuid";
-import { Bundle } from "./internal";
+import { Bundle, computedAlive } from "./internal";
 
 export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
   const Store = types
@@ -34,7 +36,14 @@ export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
     public static Props = Props;
     public static Store = Store;
     constructor(public $model: Instance<typeof Store>) {
-      unprotect(getRoot(this.$model as IAnyStateTreeNode));
+      unprotect(this.$root.$model);
+    }
+    @computedAlive public get $root(): InstanceType<Controller> {
+      const model = this.$model as IAnyStateTreeNode;
+      if (isRoot(model)) {
+        return this;
+      }
+      return getRoot(model).$controller as InstanceType<Controller>;
     }
     public $modelBeforeDestroy() {}
     public $modelAfterAttach() {}
@@ -56,6 +65,7 @@ export interface Controller<P extends ModelProperties = ModelProperties> {
         {}
       >
     >;
+    $root: InstanceType<Controller>;
     $modelBeforeDestroy(): void;
     $modelAfterAttach(): void;
     $modelAfterCreate(): void;
