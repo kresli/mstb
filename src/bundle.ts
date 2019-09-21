@@ -1,5 +1,6 @@
 import {
   IAnyModelType,
+  IAnyStateTreeNode,
   IModelType,
   Instance,
   IOptionalIType,
@@ -29,7 +30,7 @@ export function Bundle<TBase extends Controller>(Base: TBase) {
         .$controller as Instance<Store>["$controller"];
     }
 
-    public $model!: Instance<IAnyModelType>;
+    public $model!: Instance<Store>;
     constructor(...args: any[]) {
       super(...args);
       this.$model = args[0];
@@ -44,7 +45,11 @@ export function Bundle<TBase extends Controller>(Base: TBase) {
     public $resolveByType<T extends Controller>(BundleType: T, uuid?: string) {
       if (uuid) {
         const model =
-          resolveIdentifier(BundleType.Store, this.$model, uuid) || null;
+          resolveIdentifier(
+            BundleType.Store,
+            this.$model as IAnyStateTreeNode,
+            uuid
+          ) || null;
         return model ? model.$controller : null;
       }
       const cache = Array.from(
