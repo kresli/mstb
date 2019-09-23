@@ -1,5 +1,5 @@
 // tslint:disable: max-classes-per-file
-import { cast, types } from "mobx-state-tree";
+import { cast, IAnyType, IOptionalIType, types } from "mobx-state-tree";
 import { action, Bundle, computedAlive, Controller } from "../src";
 
 test("circular", () => {
@@ -187,4 +187,26 @@ test("resolveByType should recomputed only on data changes", () => {
 
   expect(parent.children[0].all).toHaveLength(3);
   expect(child.$resolveByType).toHaveBeenCalledTimes(2);
+});
+
+test("inheritance", () => {
+  interface UiType {
+    [key: string]: IOptionalIType<IAnyType, [undefined]>;
+  }
+
+  function UiFactory<U extends UiType>(ui: U) {
+    class UiController extends Controller({
+      uuid: types.optional(types.identifier, "root/ui"),
+      ...ui
+    }) {}
+
+    return class UiFactoryBundle extends Bundle(UiController) {};
+  }
+  class UiCtrl extends UiFactory({
+    settings: types.optional(types.model(), {})
+  }) {}
+
+  class Ui extends Bundle(UiCtrl) {}
+
+  expect(() => Ui.Store.create()).not.toThrowError();
 });
