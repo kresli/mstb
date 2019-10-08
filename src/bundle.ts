@@ -59,6 +59,14 @@ export function Bundle<TBase extends Controller>(Base: TBase) {
       const filtered = models.filter(m => m.type === BundleType.Store);
       return filtered.map(({ $controller }) => $controller);
     }
+    public $resolveByUuid<T = any>(uuid: string): T {
+      const model = this.$root.$model.$treenode.identifierCache.cache.get(uuid) as [];
+      if(!model || model.length === 0) {
+        throw new Error(`Bundle with "${uuid}" is not registered in root. Make sure the requested model is part of the state tree.`)
+      }
+      // @ts-ignore
+      return model[0].$controller;
+    }
   }
   return BundleBase;
 }

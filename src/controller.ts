@@ -50,6 +50,9 @@ export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
     public $resolveByType() {
       return [];
     }
+    public $resolveByUuid() {
+      return undefined as any;
+    }
   }
   return Bundle(ControllerClass as Controller<P>);
 }
@@ -73,5 +76,6 @@ export interface Controller<P extends ModelProperties = ModelProperties> {
       BundleType: T,
       uuid?: string
     ): InstanceType<T> | null;
+    $resolveByUuid<T = any>(uuid: string): T; 
   };
 }
