@@ -35,6 +35,9 @@ export function Bundle<TBase extends Controller>(Base: TBase) {
       super(...args);
       this.$model = args[0];
     }
+    /**
+     * @deprecated
+     */
     public $resolveByType<T extends Controller>(
       BundleType: T
     ): Array<InstanceType<T>>;
@@ -65,7 +68,7 @@ export function Bundle<TBase extends Controller>(Base: TBase) {
         throw new Error(`Bundle with "${uuid}" is not registered in root. Make sure the requested model is part of the state tree.`)
       }
       // @ts-ignore
-      return model[0].$controller;
+      return model[0].value.$controller;
     }
   }
   return BundleBase;
