@@ -40,7 +40,7 @@ export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
     @computedAlive public get $rootModel() {
       const model = this.$model as IAnyStateTreeNode;
       if (isRoot(model)) {
-        return this;
+        return this.$model;
       }
       return getRoot(model) as IAnyStateTreeNode;
     }
