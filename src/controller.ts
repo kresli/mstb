@@ -37,12 +37,12 @@ export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
     constructor(public $model: Instance<typeof Store>) {
       unprotect(getRoot(this.$model as IAnyStateTreeNode));
     }
-    @computedAlive public get $root(): InstanceType<Controller> {
+    @computedAlive public get $rootModel() {
       const model = this.$model as IAnyStateTreeNode;
       if (isRoot(model)) {
         return this;
       }
-      return getRoot(model).$controller as InstanceType<Controller>;
+      return getRoot(model) as IAnyStateTreeNode;
     }
     public $modelBeforeDestroy() {}
     public $modelAfterAttach() {}
@@ -67,7 +67,7 @@ export interface Controller<P extends ModelProperties = ModelProperties> {
         {}
       >
     >;
-    $root: InstanceType<Controller>;
+    $rootModel: IAnyStateTreeNode;
     $modelBeforeDestroy(): void;
     $modelAfterAttach(): void;
     $modelAfterCreate(): void;
