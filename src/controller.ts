@@ -6,7 +6,9 @@ import {
   Instance,
   isRoot,
   ModelProperties,
-  unprotect
+  unprotect,
+  IOptionalIType,
+  ISimpleType
 } from "mobx-state-tree";
 import { types } from "mobx-state-tree";
 import uuid from "uuid";
@@ -61,7 +63,7 @@ export interface Controller<P extends ModelProperties = ModelProperties> {
   new (...args: any[]): {
     $model: Instance<
       IModelType<
-        P,
+        P & { uuid: IOptionalIType<ISimpleType<string>, [undefined]> },
         {}
       >
     >;
