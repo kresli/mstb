@@ -11,7 +11,7 @@ import {
 import { ExtractProps } from "mobx-state-tree/dist/internal";
 import { Controller } from "./internal";
 
-export interface TBundle<TBase extends Controller> {
+export type TBundle<TBase extends Controller> = Omit<TBase, 'constructor'> & {
   new(...args: any[]): {
     $model: Instance<StoreType<TBase>>
     $rootModel: IAnyStateTreeNode;

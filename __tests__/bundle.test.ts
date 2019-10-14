@@ -236,3 +236,12 @@ test('factory in factory', () => {
   }
   expect(() => CarFactory({}).Store.create({})).not.toThrowError();
 })
+test('bundled bundle static props', () => {
+  class A extends Controller({a: types.string}) {
+    public static myStaticValue = 'value'
+  }
+  class B extends Bundle(A){}
+  class C extends Bundle(B){}
+  class D extends Bundle(C) {}
+  expect(D.myStaticValue).toEqual('value')
+})
