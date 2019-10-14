@@ -17,7 +17,7 @@ import { Bundle, computedAlive } from "./internal";
 export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
   const Store = types
     .model({
-      // uuid: types.optional(types.identifier, () => uuid())
+      uuid: types.optional(types.identifier, () => uuid())
     })
     .props(Props)
     .actions(self => ({
