@@ -4,8 +4,6 @@ import {
   IAnyStateTreeNode,
   IModelType,
   Instance,
-  IOptionalIType,
-  ISimpleType,
   isRoot,
   ModelProperties,
   unprotect
