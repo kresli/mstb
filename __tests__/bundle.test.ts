@@ -1,5 +1,5 @@
 // tslint:disable: max-classes-per-file
-import { cast, IAnyType, IOptionalIType, types } from "mobx-state-tree";
+import { cast, IAnyType, IOptionalIType, types, IAnyModelType } from "mobx-state-tree";
 import { action, Bundle, computedAlive, Controller } from "../src";
 
 test("circular", () => {
@@ -210,3 +210,18 @@ test("inheritance", () => {
 
   expect(() => Ui.Store.create()).not.toThrowError();
 });
+
+test('factory in factory', () => {
+  interface Config {
+    [k: string]: IOptionalIType<IAnyType, [undefined]>;
+  }
+  const CarBaseFactory = <C extends Config>(config: C) => {
+    class CarController extends Controller(config) {}
+    return class Car extends Bundle(CarController) {}
+  }
+  const CarFactory = <C extends Config>(config: C) => {
+    class CarController extends CarBaseFactory(config) {}
+    return class Car extends Bundle(CarController) {}
+  }
+  expect(() => CarFactory({}).Store.create({})).not.toThrowError();
+})
