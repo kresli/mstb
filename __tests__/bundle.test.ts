@@ -216,7 +216,7 @@ test('bundled bundle', () => {
   class B extends Bundle(A){}
   class C extends Bundle(B){}
   class D extends Bundle(C) {}
-  expect(D.Store.create({a: 'works'})).not.toThrowError();
+  expect(() => D.Store.create({a: 'works'})).not.toThrowError();
 })
 
 test('factory in factory', () => {
