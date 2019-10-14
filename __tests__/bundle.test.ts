@@ -138,7 +138,7 @@ test("call $modelBeforeDestroy on destroy", () => {
 
 test("$resolveByType", () => {
   class ChildCtrl extends Controller({ title: types.string }) {
-    @computedAlive public get all() {
+    @computedAlive public get all(): Child[] {
       return this.$resolveByType(Child);
     }
   }
@@ -159,7 +159,7 @@ test("$resolveByType", () => {
 
 test("resolveByType should recomputed only on data changes", () => {
   class ChildCtrl extends Controller({ title: types.string }) {
-    @computedAlive public get all() {
+    @computedAlive public get all(): Child[] {
       return this.$resolveByType(Child);
     }
   }
@@ -211,6 +211,14 @@ test("inheritance", () => {
   expect(() => Ui.Store.create()).not.toThrowError();
 });
 
+test('bundled bundle', () => {
+  class A extends Controller({a: types.string}) {}
+  class B extends Bundle(A){}
+  class C extends Bundle(B){}
+  class D extends Bundle(C) {}
+  expect(D.Store.create({a: 'works'})).not.toThrowError();
+})
+
 test('factory in factory', () => {
   interface Config {
     [k: string]: IOptionalIType<IAnyType, [undefined]>;
@@ -220,7 +228,10 @@ test('factory in factory', () => {
     return class Car extends Bundle(CarController) {}
   }
   const CarFactory = <C extends Config>(config: C) => {
-    class CarController extends CarBaseFactory(config) {}
+    class CarController extends CarBaseFactory({
+      ...config,
+      title: types.optional(types.string, ''),
+    }) {}
     return class Car extends Bundle(CarController) {}
   }
   expect(() => CarFactory({}).Store.create({})).not.toThrowError();

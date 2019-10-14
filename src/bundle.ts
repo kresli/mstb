@@ -11,7 +11,28 @@ import {
 import { ExtractProps } from "mobx-state-tree/dist/internal";
 import { Controller } from "./internal";
 
-export function Bundle<TBase extends Controller>(Base: TBase) {
+export interface TBundle<TBase extends Controller> {
+  new(...args: any[]): {
+    $model: Instance<StoreType<TBase>>
+    $rootModel: IAnyStateTreeNode;
+    $modelAfterAttach(): void;
+    $modelBeforeDestroy(): void;
+    $modelAfterCreate():void
+    $resolveByType<T extends Controller>(
+      BundleType: T,
+      uuid?: string
+    ): InstanceType<T> | null;
+    $resolveByUuid<T>(uuid: string): T;
+  } & Omit<InstanceType<TBase>, '$model'>;
+  
+  create(
+    snap: SnapshotIn<StoreType<TBase>>
+  ): Instance<StoreType<TBase>>["$controller"]
+  Store: StoreType<TBase>;
+  Props: TBase['Props'];
+}
+
+export function Bundle<TBase extends Controller>(Base: TBase): TBundle<TBase> {
   type Store = StoreType<TBase>;
   const Store = Base.Store.named(Base.name).volatile(self => ({
     $controller: new BundleBase(self)
@@ -71,7 +92,8 @@ export function Bundle<TBase extends Controller>(Base: TBase) {
       return model[0].value.$controller;
     }
   }
-  return BundleBase;
+  // @todo: we should be casting here
+  return BundleBase as unknown as TBundle<TBase>;
 }
 
 export interface BundleType extends ReturnType<typeof Bundle> {}
