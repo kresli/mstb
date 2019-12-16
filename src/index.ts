@@ -8,5 +8,4 @@ export {
   extractBundle
 } from "./internal";
 
-import { BundleType } from "./internal";
-export type BundleType = BundleType;
+export { BundleType } from "./internal";
