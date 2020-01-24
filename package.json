@@ -1,6 +1,6 @@
 {
   "name": "mstb",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "",
   "main": "dist/mstb.cjs.js",
   "module": "dist/mstb.esm.js",
