@@ -44,13 +44,16 @@ export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
       }
       return getRoot(model) as IAnyStateTreeNode;
     }
-    public $modelBeforeDestroy() {}
-    public $modelAfterAttach() {}
-    public $modelAfterCreate() {}
+    public $modelBeforeDestroy() { }
+    public $modelAfterAttach() { }
+    public $modelAfterCreate() { }
     public $resolveByType() {
       return [];
     }
     public $resolveByUuid() {
+      return undefined as any;
+    }
+    public $resolveMaybeByUuid() {
       return undefined as any;
     }
   }
@@ -60,7 +63,7 @@ export function Controller<P extends ModelProperties>(Props: P): Controller<P> {
 export interface Controller<P extends ModelProperties = ModelProperties> {
   Props: P;
   Store: IModelType<P, {}>;
-  new (...args: any[]): {
+  new(...args: any[]): {
     $model: Instance<
       IModelType<
         P & { uuid: IOptionalIType<ISimpleType<string>, [undefined]> },
@@ -76,6 +79,7 @@ export interface Controller<P extends ModelProperties = ModelProperties> {
       BundleType: T,
       uuid?: string
     ): InstanceType<T> | null;
-    $resolveByUuid<T = any>(uuid: string): T; 
+    $resolveByUuid<T = any>(uuid: string): T;
+    $resolveMaybeByUuid<T = any>(uuid: string): T | null;
   };
 }
