@@ -70,6 +70,14 @@ export function Bundle<TBase extends Controller>(Base: TBase) {
       // @ts-ignore
       return model[0].value.$controller;
     }
+    public $resolveMaybeByUuid<T = any>(uuid: string): T | null {
+      const model = (this.$rootModel as any).$treenode.identifierCache.cache.get(uuid) as [];
+      if(!model || model.length === 0) {
+        return null;
+      }
+      // @ts-ignore
+      return model[0].value.$controller;
+    }
   }
   return BundleBase;
 }
